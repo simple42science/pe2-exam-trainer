@@ -23,7 +23,7 @@
         f: [
           { m: R`\frac{C_M - C_P}{C_F - C_P} = \exp\left(\frac{J_W}{k_L}\right), \quad k_L = \frac{D_L}{\delta}`, u: '-', w: 'film theory; J_W in **m/s**' },
           { m: R`R \approx 1:\quad \boxed{\beta = \frac{C_M}{C_F} = \exp\left(\frac{J_W}{k_L}\right)}`, u: '-', w: 'polarisation factor' },
-          { m: R`k_L = \lambda\,\frac{D_L}{d_H}\,Re^{0.5}\,Sc^{1/3}, \quad Re = \frac{\rho v d_H}{\mu},\; Sc = \frac{\mu}{\rho D_L}`, u: 'm/s', w: 'Mariñas–Urama (spiral wound with spacer), λ = 0.40–0.54. Alternative Schock–Miquel: Sh = 0.065·Re^0.875·Sc^0.25 (19S-2)' },
+          { m: R`k_L = \lambda\,\frac{D_L}{d_H}\,Re^{0.5}\,Sc^{1/3}, \quad Re = \frac{\rho v d_H}{\mu},\; Sc = \frac{\mu}{\rho D_L}`, u: 'm/s', w: 'Mariñas–Urama (spiral wound with spacer), λ = 0.40–0.54. Alternative Schock–Miquel (MWH p. 1371): Sh = **0.023**·Re^0.875·Sc^0.25 – the 19S-2b official result (β ≈ 2.09) needs 0.023; the often-quoted 0.065 gives β ≈ 1.3' },
         ],
         trap: R`$d_H$ = hydraulic diameter = 4·area/wetted perimeter. Spiral wound with only the **channel height h** given → **d_H = 2h** (only this reproduces 16W-4d and 17S-1c). If the task gives d_H directly (14W-4, 15W-4), use it.`,
         li: [
