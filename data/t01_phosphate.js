@@ -63,7 +63,7 @@
           { m: R`\boxed{\text{Alk}_e = \text{Alk}_{in} - 2\,n_{N,nitr} - (3\,n_{Me} - n_{P,prec})}`, u: 'mmol/L', w: R`$3n_{Me} - n_P$ = 2 per P (MePO₄) + 3 per excess Me (hydroxide). Reproduces 21W-1b exactly (−0.336).` },
           { m: R`N_{nitr} = TKN_{in} - N_{bio} - TKN_e, \quad N_{bio} = i_N\,Y_{obs}\,\Delta COD`, u: 'gN/m^3', w: 'N built into biomass is **not** nitrified; n = N/14 in mmol/L' },
         ],
-        li: ['Alk_e < 0 (in practice < 1 mmol/L) → pH drops → nitrification inhibited.', 'Remedies: **post-precipitation** (after the biology), denitrification (+1 Alk/N), base/lime, less metal.'],
+        li: ['Alk_e < 0 (in practice < 1 mmol/L) → pH drops → nitrification inhibited.', 'Remedies: **post-precipitation** (after the biology), denitrification (+1 Alk/N), base/lime, less metal.', 'Older convention (18W-3d official, −0.163): only the **excess** Al counts (3·n_Al,excess) and only the N in the wasted sludge is subtracted. Same verdict – state your assumption.'],
       },
       {
         h: '📍 Where to dose?',
