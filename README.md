@@ -16,9 +16,13 @@ Keine Anmeldung, kein Server, keine Datenbank. Der Lernfortschritt bleibt **loka
 - **Alle 19 Originalprüfungen (2014–2023)** als Walkthrough: jede Teilaufgabe → *Wie gehst du sie an?* (Ansatz wählen)
   → Lösungsplan Schritt für Schritt → typische Falle → offizielles Resultat → Selbsteinschätzung.
   Die sechs neuesten Prüfungen (2021–2023) sind als **Phase-2-Mock** markiert (Lernplan: zuerst auf Papier lösen).
-- **Spiele / Lernmethoden** (948 Items):
+- **🗺️ Anlagen-Roadmap:** interaktive Fliessbilder einer **Kläranlage** und eines **Trinkwasserwerks**. Jede Einheit antippen →
+  was dort passiert, Spick-Kapitel, Formel, *wie du es in der Prüfung anwendest*, Originalaufgaben und passende Grafiken.
+  „Folge dem Schadstoff“ (P, N, Partikel, Mikroverunreinigungen, Pathogene …) zeigt seinen Weg durch die Anlage; dazu ein geführter Rundgang.
+- **Spiele / Lernmethoden** (987 Items):
   - 🔁 Smart Review (Spaced Repetition über alle Spiele)
   - 🃏 Karteikarten · ❓ Quiz · 🧭 *Which tool?* (Ansatz für echte Prüfungsfragen wählen)
+  - 🗺️ *Where in the plant?* (die richtige Einheit auf dem Anlagenplan antippen)
   - ↕️ *Up or down?* (Was steigt, was sinkt – für qualitative Fragen)
   - ✖️ Faktor-Sprint (Kopfrechnen: ×4, ×100 …) · ⚡ Speed-Round mit Highscore
   - 🧩 Formel-Lücken · 🪜 Lösungsweg ordnen · 🐞 Fehler finden · 🔗 Zuordnen
@@ -55,6 +59,8 @@ Alles ist reines HTML/CSS/JavaScript ohne Build-Schritt:
 | `data/tNN_*.js` | ein Kapitel: Lernseite (`learn`) und Übungs-Items (`q`) |
 | `data/exams_*.js` | die Originalprüfungen als Walkthrough |
 | `data/strategy.js` | Prüfungsstrategie |
+| `data/plantmap.js` | Anlagen-Roadmap: Stationen, Schadstoff-Wege, Quiz *Where in the plant?* |
+| `js/plantmap.js` | Zeichnung der beiden Anlagen (SVG) |
 | `js/graphs.js` | interaktive Grafiken und Schemata |
 | `js/games.js`, `js/app.js` | Spiel-Engines, Navigation, Screens |
 

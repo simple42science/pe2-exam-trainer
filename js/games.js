@@ -18,7 +18,7 @@
   const KIND = {
     card: ['🃏', 'Flashcard'], mcq: ['❓', 'Quiz'], trend: ['↕️', 'Up or down?'], factor: ['✖️', 'Factor estimate'],
     gap: ['🧩', 'Formula builder'], order: ['🪜', 'Solution path'], bug: ['🐞', 'Bug hunt'], match: ['🔗', 'Match it'],
-    tackle: ['🧭', 'Which tool?'],
+    tackle: ['🧭', 'Which tool?'], where: ['🗺️', 'Where in the plant?'],
   };
   PE.KIND = KIND;
 
@@ -45,6 +45,14 @@
           all.push(sb);
         });
       });
+    });
+    ((PE.plant && PE.plant.quiz) || []).forEach((q) => {
+      const stn = PE.plant.st[q.map] && PE.plant.st[q.map][q.a];
+      if (!stn) return;
+      q.t = 'where';
+      q.id = 'm:' + PE.store.hash(q.map + '|' + q.q);
+      q.topic = stn.t[0];
+      all.push(q);
     });
     const seen = {};
     all.forEach((it) => { if (seen[it.id]) it.id += '~' + Object.keys(seen).length; seen[it.id] = 1; });
@@ -308,6 +316,32 @@
     } else {
       el.querySelector('.rev').addEventListener('click', (e) => { e.target.classList.add('hidden'); reveal(); });
     }
+  };
+
+  /** plant roadmap: tap the unit where it happens */
+  R.where = function (el, it, ctx) {
+    const P = PE.plant, mp = P.maps[it.map];
+    el.innerHTML = `<div class="q-text">${fmt(it.q)}</div>
+      <div class="small muted" style="margin:-6px 0 8px">${mp.icon} ${mp.name} – tap the unit</div>
+      <div class="card pm-card"><div class="pm-wrap">${PE.MAP.svg(it.map, { quiz: true })}</div></div><div class="fbw"></div>`;
+    let done = false;
+    function pick(s) {
+      if (done) return;
+      done = true;
+      const ok = s === it.a, right = P.st[it.map][it.a];
+      el.querySelectorAll('.st').forEach((g) => {
+        if (g.dataset.s === it.a) g.classList.add('ok');
+        else if (g.dataset.s === s) g.classList.add('bad');
+      });
+      const fb = el.querySelector('.fbw');
+      fb.innerHTML = feedback(ok, `<b>${right.ic} ${right.n}</b>${ok ? '' : ` – you tapped ${P.st[it.map][s].n}`}` + explain(it));
+      ctx.done(ok);
+      setTimeout(() => fb.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60);
+    }
+    el.querySelectorAll('.st').forEach((g) => {
+      g.addEventListener('click', () => pick(g.dataset.s));
+      g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g.dataset.s); } });
+    });
   };
 
   PE.renderItem = function (el, it, ctx) { (R[it.t] || R.mcq)(el, it, ctx); };

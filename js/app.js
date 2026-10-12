@@ -98,10 +98,11 @@
 
   // ------------------------------------------------------------- modes
   const MODES = [
-    { id: 'review', icon: '🔁', name: 'Smart review', desc: 'Due items from every game, spaced repetition', types: ['card', 'mcq', 'trend', 'factor', 'gap', 'order', 'bug', 'match', 'tackle'], n: 15 },
+    { id: 'review', icon: '🔁', name: 'Smart review', desc: 'Due items from every game, spaced repetition', types: ['card', 'mcq', 'trend', 'factor', 'gap', 'order', 'bug', 'match', 'tackle', 'where'], n: 15 },
     { id: 'cards', icon: '🃏', name: 'Flashcards', desc: 'Concepts, definitions, numbers to know', types: ['card'], n: 20 },
     { id: 'quiz', icon: '❓', name: 'Quiz', desc: 'Concept & exam-logic multiple choice', types: ['mcq'], n: 12 },
     { id: 'tool', icon: '🧭', name: 'Which tool?', desc: 'Real exam sub-questions: pick the approach', types: ['tackle'], n: 10, pickOnly: true },
+    { id: 'where', icon: '🗺️', name: 'Where in the plant?', desc: 'Tap the unit on the plant map where it happens', types: ['where'], n: 10 },
     { id: 'trend', icon: '↕️', name: 'Up or down?', desc: 'What rises, what falls – the qualitative questions', types: ['trend'], n: 10 },
     { id: 'factor', icon: '✖️', name: 'Factor sprint', desc: '75 s of mental scaling (×4, ×100 …), no calculator', types: ['factor'], n: 40, timed: 75 },
     { id: 'gap', icon: '🧩', name: 'Formula builder', desc: 'Fill the missing term of a Spick formula', types: ['gap'], n: 10 },
@@ -127,6 +128,7 @@
       const m = r.re.exec(path);
       if (m) {
         setChrome(r.opt, path);
+        view().classList.remove('pm-open');
         view().innerHTML = '';
         try { r.fn(m, params); } catch (e) { console.error(e); view().innerHTML = `<div class="card"><b>Something went wrong.</b><pre class="small">${PE.esc(e.stack || e)}</pre></div>`; }
         window.scrollTo(0, 0);
@@ -172,6 +174,8 @@
       <div class="grid">
         <a class="tile hero" href="#/play/review"><span class="ti">🔁</span><span class="tt">Daily mix – smart review</span>
           <span class="ts">${due ? `${due} items are due` : 'Nothing due'} · ${unseen} new items waiting · all games mixed</span></a>
+        <a class="tile wide" href="#/map"><span class="tt">🗺️ Plant roadmap</span><span class="ts">Where every process sits in a wastewater and a drinking-water plant – tap a unit, follow a pollutant</span>
+          <span class="trail" aria-hidden="true">🚽 → ⏬ → 🦠 🫧 → 🌀 → ⚡ → ⏳ → 🏞️</span></a>
         ${nextEx ? `<a class="tile" href="#/tackle/${nextEx[0].id}/${nextEx[1].n}"><span class="ti">🧭</span><span class="tt">Tackle next exam task</span><span class="ts">${nextEx[0].label} · ${nextEx[1].title}</span></a>`
           : `<a class="tile" href="#/exams"><span class="ti">🧭</span><span class="tt">Exam walkthroughs</span><span class="ts">All 2014–2020 tasks tackled!</span></a>`}
         <a class="tile" href="#/mock"><span class="ti">⏱️</span><span class="tt">Mock exam</span><span class="ts">4 random tasks, exam-style</span></a>
@@ -194,6 +198,7 @@
     PE.topics.forEach((t) => { (groups[t.grp] = groups[t.grp] || []).push(t); });
     view().innerHTML = `<h2>Learn – all topics</h2>
       <p class="small muted">Same numbering as your Spick, Lernplan and podcasts. Priority from 19 past exams: <span class="prio A">A</span> very frequent, <span class="prio B">B</span> regular, <span class="prio">C</span> qualitative.</p>
+      <a class="topic-row" href="#/map"><span class="pm-ic">🗺️</span><div class="tb"><div class="tt">Plant roadmap</div><div class="ts">See where each topic sits in a WWTP and a drinking-water plant</div></div>›</a>
       ${PE.topics.map((t) => { const m = mastery(t.id); return `<a class="topic-row" href="#/topic/${t.id}">${tnum(t)}
         <div class="tb"><div class="tt">${t.title} ${S.S.read[t.id] ? '✓' : ''}</div><div class="ts">${GRP[t.grp]} · ${t.exams.length ? `${t.exams.length} exam task${t.exams.length > 1 ? 's' : ''}` : 'qualitative'} · ${topicItems(t.id).length} items</div>
         <div class="bar thin" style="margin-top:5px"><i style="width:${Math.round(m * 100)}%"></i></div></div>
@@ -235,6 +240,7 @@
         <div class="small muted">${t.exams.length} exam task(s) · ${its.length} practice items · mastery ${Math.round(mastery(t.id) * 100)}%</div></div><span class="prio ${t.pri}">${t.pri}</span></div>
         ${t.oneMin ? `<p style="margin:10px 0 4px">${fmt(t.oneMin)}</p>` : ''}
         <div class="chips" style="margin-top:8px">${t.exams.map(examRefLink).join('')}</div>
+        ${(() => { const sp = stationsForTopic(t.id); return sp.length ? `<div class="chips" style="margin-top:8px">${sp.map(([mp, id, st]) => `<a class="chip sm" href="#/map?m=${mp}&s=${id}">📍 ${PE.plant.maps[mp].icon} ${st.n}</a>`).join('')}</div>` : ''; })()}
       </div>
       <div class="chips scroll" style="margin-bottom:10px">
         <a class="chip on" href="#/play/review?t=${t.id}">🔁 Review topic</a>
@@ -414,6 +420,157 @@
     PE.G.mount($('#gm'), d.id);
     checkMasteryBadges();
   }, { back: true, tab: 'practice' });
+
+  // ------------------------------------------------------------- PLANT ROADMAP
+  function stationsForTopic(tid) {
+    const out = [];
+    if (!PE.plant) return out;
+    Object.keys(PE.plant.maps).forEach((mp) => PE.plant.maps[mp].order.forEach((id) => {
+      const st = PE.plant.st[mp][id];
+      if (!st.minor && st.t.includes(tid)) out.push([mp, id, st]);
+    }));
+    return out;
+  }
+  function allStationsVisited() {
+    const P = PE.plant;
+    return Object.keys(P.maps).every((mp) => P.maps[mp].order.every((id) => P.st[mp][id].minor || S.S.map[`${mp}.${id}`]));
+  }
+  function stationHTML(mp, id) {
+    const P = PE.plant, st = P.st[mp][id];
+    const tps = st.t.map((tid) => PE.topicById[tid]).filter(Boolean);
+    const gr = (st.g || []).filter((g) => PE.G.defs[g]);
+    return `<p style="margin:2px 0 8px">${fmt(st.what)}</p>
+      ${st.tags.length ? `<div class="chips">${st.tags.map((tg) => `<button class="chip sm" data-tag="${tg}">${P.tags[tg][0]} ${P.tags[tg][1]}</button>`).join('')}</div>` : ''}
+      <h4>📘 Spick chapter</h4><div class="chips">${tps.map((tp) => `<a class="chip" href="#/topic/${tp.id}"><span class="tnum xs grp-${tp.grp}">${tp.n}</span>${tp.short || tp.title}</a>`).join('')}</div>
+      ${st.apply.length ? `<h4>🧭 How you apply it</h4><ol class="recipe">${st.apply.map((a) => `<li>${fmt(a)}</li>`).join('')}</ol>` : ''}
+      ${(st.f || []).map((f) => `<div class="fx">${fmt('$$' + f.m + (f.u ? ` \\un{${f.u}}` : '') + '$$')}</div>`).join('')}
+      ${st.ex.length ? `<h4>📝 Original exam tasks</h4><div class="chips">${st.ex.map(examRefLink).join('')}</div>` : ''}
+      ${gr.length ? `<h4>📈 Try it</h4><div class="chips">${gr.map((g) => `<a class="chip" href="#/graph/${g}">${PE.G.defs[g].diagram ? '🖼️' : '📈'} ${PE.G.defs[g].title}</a>`).join('')}</div>` : ''}`;
+  }
+
+  route(/^\/map$/, (m0, params) => {
+    const P = PE.plant;
+    let mp = params.get('m') === 'dw' ? 'dw' : 'ww', sel = null, tag = params.get('f') || '';
+    view().innerHTML = `
+      <div class="seg" id="pmSeg" style="margin-bottom:8px">${Object.keys(P.maps).map((k) => `<button data-m="${k}">${P.maps[k].icon} ${P.maps[k].short}</button>`).join('')}</div>
+      <p class="small muted" style="margin:0 2px 8px">Tap a unit: what happens there, the Spick chapter, the formula, how the exam asks it and the original tasks.</p>
+      <div class="chips scroll" id="pmTags"></div>
+      <div id="pmStory"></div>
+      <div class="card pm-card"><div class="pm-wrap" id="pmSvg"></div></div>
+      <div class="row" style="margin-bottom:10px"><button class="btn" style="flex:1" id="pmTour">▶ Walk through</button><a class="btn ghost" style="flex:1" href="#/play/where">🎯 Map quiz</a></div>
+      <div class="card flat small" id="pmProg"></div>
+      <h3>All stations</h3><div id="pmList"></div>
+      <div class="pm-sheet" id="pmSheet" role="dialog" aria-labelledby="pmT">
+        <div class="sh-head"><span class="sh-ic" id="pmIc"></span><div style="flex:1;min-width:0"><div class="sh-t" id="pmT"></div><div class="sh-s" id="pmSub"></div></div><button class="back-btn" id="pmX" aria-label="Close">✕</button></div>
+        <div class="sh-body" id="pmBody"></div>
+        <div class="sh-nav"><button class="btn ghost sm" id="pmPrev">‹ Prev</button><span class="spacer center small muted" id="pmPos"></span><button class="btn sm" id="pmNext">Next ›</button></div>
+      </div>`;
+    const sheet = $('#pmSheet');
+
+    function syncUrl() {
+      const q = new URLSearchParams();
+      if (mp !== 'ww') q.set('m', mp);
+      if (sel) q.set('s', sel);
+      if (tag) q.set('f', tag);
+      const h = '#/map' + (q.toString() ? '?' + q : '');
+      if (location.hash !== h) history.replaceState(null, '', h);
+    }
+    function paint() {
+      const svg = $('#pmSvg svg');
+      svg.classList.toggle('flt', !!tag);
+      svg.querySelectorAll('.st').forEach((g) => {
+        g.classList.toggle('on', g.dataset.s === sel);
+        g.classList.toggle('hl', !!tag && P.st[mp][g.dataset.s].tags.includes(tag));
+      });
+    }
+    function setTag(tg) { tag = tg; renderTags(); renderStory(); paint(); syncUrl(); }
+    function renderTags() {
+      const avail = Object.keys(P.tags).filter((tg) => P.maps[mp].order.some((id) => P.st[mp][id].tags.includes(tg)));
+      if (tag && !avail.includes(tag)) tag = '';
+      $('#pmTags').innerHTML = `<span class="small muted">Follow:</span>` + ['', ...avail].map((tg) =>
+        `<button class="chip ${tg === tag ? 'on' : ''}" data-tg="${tg}">${tg ? `${P.tags[tg][0]} ${P.tags[tg][1]}` : 'All'}</button>`).join('');
+      $('#pmTags').querySelectorAll('[data-tg]').forEach((b) => b.addEventListener('click', () => setTag(b.dataset.tg)));
+    }
+    function renderStory() {
+      const el = $('#pmStory');
+      if (!tag) { el.innerHTML = ''; return; }
+      const ids = P.maps[mp].order.filter((id) => P.st[mp][id].tags.includes(tag));
+      el.innerHTML = `<div class="card flat pm-story"><b>${P.tags[tag][0]} ${P.tags[tag][1]}:</b> ${fmt(P.stories[mp][tag] || '')}
+        <div class="chips" style="margin-top:8px">${ids.map((id) => `<button class="chip sm" data-open="${id}">${P.st[mp][id].ic} ${P.st[mp][id].n}</button>`).join('')}</div></div>`;
+      el.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => open(b.dataset.open)));
+    }
+    function renderMap() {
+      $('#pmSvg').innerHTML = PE.MAP.svg(mp);
+      $('#pmSvg').querySelectorAll('.st').forEach((g) => {
+        g.addEventListener('click', () => open(g.dataset.s, false));
+        g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(g.dataset.s, false); } });
+      });
+      paint();
+    }
+    function renderList() {
+      $('#pmList').innerHTML = P.maps[mp].order.map((id) => {
+        const st = P.st[mp][id];
+        const tps = st.t.map((tid) => PE.topicById[tid]).filter(Boolean);
+        return `<button class="topic-row pm-row" data-open="${id}"><span class="pm-ic">${st.ic}</span><div class="tb"><div class="tt">${st.n}${st.opt ? ' <span class="small muted">· optional</span>' : ''}</div>
+          <div class="ts">${tps.map((tp) => `§${tp.n} ${tp.short || tp.title}`).join(' · ')}${st.ex.length ? ` · ${st.ex.length} exam task${st.ex.length > 1 ? 's' : ''}` : ''}</div></div><span>${S.S.map[`${mp}.${id}`] ? '✓' : '›'}</span></button>`;
+      }).join('');
+      $('#pmList').querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => open(b.dataset.open)));
+    }
+    function renderProg() {
+      const ids = P.maps[mp].order.filter((id) => !P.st[mp][id].minor);
+      const v = ids.filter((id) => S.S.map[`${mp}.${id}`]).length;
+      $('#pmProg').innerHTML = `${P.maps[mp].icon} <b>${v}/${ids.length}</b> stations of the ${P.maps[mp].short.toLowerCase()} plant opened (+5 XP each the first time)
+        <div class="bar thin" style="margin-top:6px"><i style="width:${Math.round((100 * v) / ids.length)}%"></i></div>`;
+    }
+    function open(id, scroll) {
+      const st = P.st[mp][id];
+      if (!st) return;
+      sel = id;
+      const order = P.maps[mp].order, k = order.indexOf(id);
+      $('#pmIc').textContent = st.ic;
+      $('#pmT').textContent = st.n;
+      $('#pmSub').textContent = `${P.maps[mp].name}${st.opt ? ' · optional unit' : ''}${st.minor ? ' · not calculated in PE II' : ''}`;
+      $('#pmBody').innerHTML = stationHTML(mp, id);
+      $('#pmBody').scrollTop = 0;
+      $('#pmBody').querySelectorAll('[data-tag]').forEach((b) => b.addEventListener('click', () => setTag(b.dataset.tag)));
+      $('#pmPos').textContent = `${k + 1} / ${order.length}`;
+      $('#pmPrev').disabled = k === 0;
+      $('#pmNext').textContent = k === order.length - 1 ? 'Done ✓' : 'Next ›';
+      sheet.classList.add('open');
+      view().classList.add('pm-open');
+      paint(); syncUrl();
+      const key = `${mp}.${id}`;
+      if (!S.S.map[key]) {
+        S.S.map[key] = 1; S.addXP(5); S.save();
+        renderList(); renderProg(); ui.refreshHeader();
+        if (allStationsVisited() && S.award('explorer')) ui.confetti();
+      }
+      const g = $(`#pmSvg .st[data-s="${id}"]`);
+      if (g && scroll !== false) {
+        const r = g.getBoundingClientRect(), top = 70, room = innerHeight * 0.38;
+        if (r.top < top || r.bottom > room) window.scrollBy({ top: r.top - top, behavior: 'smooth' });
+      }
+    }
+    function close() { sel = null; sheet.classList.remove('open'); view().classList.remove('pm-open'); paint(); syncUrl(); }
+    function setMap(k) {
+      mp = k;
+      view().querySelectorAll('#pmSeg button').forEach((b) => b.classList.toggle('on', b.dataset.m === mp));
+      sel = null; sheet.classList.remove('open'); view().classList.remove('pm-open');
+      renderTags(); renderStory(); renderMap(); renderList(); renderProg(); syncUrl();
+    }
+    view().querySelectorAll('#pmSeg button').forEach((b) => b.addEventListener('click', () => setMap(b.dataset.m)));
+    $('#pmX').addEventListener('click', close);
+    $('#pmPrev').addEventListener('click', () => { const o = P.maps[mp].order, k = o.indexOf(sel); if (k > 0) open(o[k - 1]); });
+    $('#pmNext').addEventListener('click', () => {
+      const o = P.maps[mp].order, k = o.indexOf(sel);
+      if (k < o.length - 1) open(o[k + 1]);
+      else { close(); ui.toast(`${P.maps[mp].icon} Walk-through complete – try 🎯 Where in the plant?`); }
+    });
+    $('#pmTour').addEventListener('click', () => open(P.maps[mp].order[0]));
+    setMap(mp);
+    const s0 = params.get('s');
+    if (s0 && P.st[mp][s0]) setTimeout(() => open(s0), 60);
+  }, { back: true, tab: 'learn', title: 'Plant roadmap', sub: 'Where every process sits' });
 
   // ------------------------------------------------------------- STRATEGY
   route(/^\/strategy$/, () => {

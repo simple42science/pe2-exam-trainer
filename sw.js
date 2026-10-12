@@ -1,5 +1,5 @@
 /* Service worker – offline cache for the PE II Trainer (stale-while-revalidate). */
-const CACHE = 'pe2trainer-v3';
+const CACHE = 'pe2trainer-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './js/store.js',
   './js/plot.js',
   './js/graphs.js',
+  './js/plantmap.js',
   './js/games.js',
   './js/app.js',
   './data/t00_toolbox.js',
@@ -34,6 +35,7 @@ const ASSETS = [
   './data/t16_system.js',
   './data/t99_traps.js',
   './data/strategy.js',
+  './data/plantmap.js',
   './data/exams_2014_2016.js',
   './data/exams_2017_2019.js',
   './data/exams_2020_2023.js',

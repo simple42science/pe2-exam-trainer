@@ -18,6 +18,7 @@
     tackled: {},      // 'exam.task.sub' -> 1 (review) | 2 (got it)
     read: {},         // topicId -> 1
     graphs: {},       // graphId -> 1
+    map: {},          // 'ww.as' -> 1 (plant-roadmap station opened)
     settings: { theme: 'auto', examDate: '', examMin: 120, topics: [] },
     created: Date.now(),
   });
@@ -153,6 +154,7 @@
     master1: ['🎯', 'Topic Master', 'Reach 80 % mastery in one topic'],
     master5: ['🧠', 'Polymath', 'Reach 80 % mastery in five topics'],
     mock: ['⏱️', 'Mock Survivor', 'Finish a mock exam'],
+    explorer: ['🗺️', 'Plant Explorer', 'Open every station on both plant maps'],
   };
   let onBadge = null;
   function award(id) {
