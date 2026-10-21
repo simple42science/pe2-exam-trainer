@@ -1,5 +1,5 @@
 /* Service worker – offline cache for the PE II Trainer (stale-while-revalidate). */
-const CACHE = 'pe2trainer-v4';
+const CACHE = 'pe2trainer-v5';
 const ASSETS = [
   './',
   './index.html',

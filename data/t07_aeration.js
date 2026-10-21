@@ -22,7 +22,7 @@
         f: [{ m: R`C_{S,T,m} = C_{S,T,1atm}\cdot\frac{p_{amb} + 0.5\,h_{inj}/10.33}{1\,\text{atm}}\cdot\frac{100 - 0.5\,h_{inj}\,OTE_h}{100}`, u: 'g/m^3', w: '**S** saturation, **T** actual temperature, **m** mid-depth; 2nd factor = O₂ depletion of the bubble (omit if the task says so)' }],
         g: 'csat',
         li: [
-          R`OTE from SOTE: $\frac{OTE}{SOTE} = \frac{\alpha}{k_Ck_T}\cdot\frac{C_{G,20°C,1atm}}{C_{G,T,p}}$ (2nd factor ≈ 1; ≈ 1.1 at 25 °C, 0.96 atm – 19S-4a gives 3.6 %).`,
+          R`OTE from SOTE: $\frac{OTE}{SOTE} = \frac{\alpha}{k_Ck_T}\cdot\frac{C_{G,20°C,1atm}}{C_{G,T,p}}$ (2nd factor ≈ 1; ≈ 1.06 at 25 °C, 0.96 atm – 19S-4a gives 3.6 %).`,
           'OTE_h appears inside C_S,T,m → iterate (or solve algebraically as in Ex4).',
           '"10 m water = 1 atm" if the exam says so (14W-1); otherwise 10.33 m.',
         ],

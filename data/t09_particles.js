@@ -38,7 +38,7 @@
           '**Sedimentation:** removes the large ones. **Filtration:** worst near 1 µm (Yao minimum); straining, interception and sedimentation remove large ones well (18S-1c).',
           'Which measure for what: mass → TSS & standards; volume → filter head loss; surface → adsorption; number → hygiene.',
           'Measurement: Coulter counter (electrical sensing zone), light blockage/scattering, laser diffraction, microscopy (SEM/TEM), turbidity (NTU, not size resolved), TSS. Mostly spheres assumed – state the method.',
-          'Sizes: viruses 0.01–0.1 µm · bacteria 0.5–2 · Crypto 3–5 · Giardia 8–15 · algae 5–100 · clay < 2 · colloids 0.001–1 µm.',
+          'Sizes (MWH Fig. 2-5, p. 136/138): viruses 0.01–0.1 (up to 0.25) µm · bacteria 0.5–2 · Crypto 3–7 · Giardia 7–14 · algae ~1–30 · clay 0.1–2 · colloids 0.001–1 µm.',
           'Process selection (Boller & Kaegi): < 0.5 µm perikinetic flocculation, UF · 0.5–30 µm orthokinetic flocculation + sedimentation/filtration, MF · > 30 µm screens, sedimentation · > 50 mg TSS/L: settle/float before filtering.',
         ],
       },

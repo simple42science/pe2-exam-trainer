@@ -45,7 +45,7 @@
           '**GDM** (gravity-driven): 30–65 mbar, flux stabilises thanks to a biofilm, no backflush, no chemicals – chemical cleaning would **destroy the biofilm** (21S-4e).',
           R`LRV = log(C_feed/C_perm); nothing detected → LRV ≥ log(C_feed/LOD) (14S-4a: log 250 000 = 5.4).`,
           'Cake resistance (Carman–Kozeny): κ_c = 36κ_K(1 − ε)²δ_c/(ε³d_p²), κ_K ≈ 5. Turbulent fibres (Re > 2300) need absurd flows.',
-          'Typical UF: J 30–150 L/(m²h) (manufacturer 70), TMP < 1 bar; Swiss demand ≈ 142 L per person and day.',
+          'Typical MF/UF (MWH Tab. 12-1): J 30–170 L/(m²h) at TMP 0.2–1 bar (manufacturer 70); Swiss demand ≈ 142 L per person and day.',
         ],
       },
       {

@@ -40,7 +40,7 @@
         li: [
           '**Alum** Al₂(SO₄)₃·18H₂O contains **2 Al** → n_alum = n_Al/2 (18W-3b).',
           '**FeSO₄ is Fe(II)** → must be oxidised first → dose into the **aerated** tank.',
-          'Chart (M&E 6-14): roughly fraction remaining ≈ 10^(−0.44·ratio): 80 % → 1.6, 90 % → 2.2, 95 % → 2.9; exam figures differ slightly (21W-1: 89.5 % → 2.4).',
+          'Chart (M&E 6-14): roughly fraction remaining ≈ 10^(−0.44·ratio): 80 % → 1.6, 90 % → 2.3, 95 % → 3.0; exam figures differ slightly (21W-1: 89.5 % → 2.4).',
         ],
         trap: R`Ratio **given** in the task ("Fe to initial soluble P 1.4 mol/mol")? Do not read the chart, and multiply by the **initial soluble P**, not by $P_{prec}$ – 17W-2c: 1.353 gP/m³ → 0.0100 mL/L ✓ (with P_prec: 0.0077 ✗).`,
       },
